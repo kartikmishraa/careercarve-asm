@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const { response } = require("express");
 
 // @desc: Send back a simple welcome message
+// @access: PUBLIC
 // @route: GET /api/welcome
 const welcomeMsg = (req, res) => {
   res.status(200).json({
@@ -11,7 +12,8 @@ const welcomeMsg = (req, res) => {
   });
 };
 
-// @desc:
+// @desc: Endpoint for the user to signup
+// @access: PUBLIC
 // @route: POST /api/signup
 const signup = asyncHandler(async (req, res) => {
   const { name, email, password, phone } = req.body;
@@ -48,6 +50,9 @@ const signup = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc: Endpoint for the user to sigin
+// @access: PUBLIC
+// @route: POST /api/signin
 const signin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -81,6 +86,15 @@ const signin = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Wrong password");
   }
+});
+
+// @desc: Endpoint for the user to edit or add phone number
+// @access: PRIVATE
+// @route: PUT /api/edit/phonenumber
+const updatePhone = asyncHandler(async (req, res) => {
+  const { phone } = req.body;
+
+  res.status(201).json({ tmp_success: true, message: "woohoo" });
 });
 
 module.exports = { welcomeMsg, signup, signin };
