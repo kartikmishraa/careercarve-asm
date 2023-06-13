@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv").config();
 const colors = require("colors");
+const { errorHandler } = require("./middleware/errorHandler");
+const { errorMiddleware } = require("./middleware/errorMiddleware");
 
 const PORT = process.env.PORT || 5000;
 
@@ -12,9 +14,9 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use("/api", require("./routes/userRoute"));
 
-// Error Handler
-const { errorHandler } = require("./middleware/errorMiddleware");
+// Error Handler, Middleware
 app.use(errorHandler);
+app.use(errorMiddleware);
 
 // Server Listening
 app.listen(PORT, () => {
