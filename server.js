@@ -4,6 +4,14 @@ const dotenv = require("dotenv").config();
 const colors = require("colors");
 const { errorHandler } = require("./middleware/errorHandler");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
+const sequelize = require("./config/db");
+
+sequelize
+  .sync()
+  .then(() => {
+    console.log(`connected to`, `SQLITE`.bgYellow);
+  })
+  .catch((err) => console.log(err));
 
 const PORT = process.env.PORT || 5000;
 

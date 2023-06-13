@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const { response } = require("express");
+const User = require("../models/userModel");
 
 // @desc: Send back a simple welcome message
 // @access: PUBLIC
@@ -25,7 +26,7 @@ const signup = asyncHandler(async (req, res) => {
   }
 
   // Check if user already exists
-  const userExists = false; // check with db
+  const userExists = await User.findOne({ where: { email: email } });
   if (userExists) {
     res.status(400);
     throw new Error("User already exists");
@@ -36,7 +37,12 @@ const signup = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   // Create user
-  const user = "djioqwjdfsa"; // create using DB
+  const user = await User.create({
+    name: name,
+    email: email,
+    password: hashedPassword,
+    phone_number: phone_number ? phone_number : null,
+  });
   if (user) {
     res.status(201).json({
       success: true,
@@ -63,7 +69,7 @@ const signin = asyncHandler(async (req, res) => {
   }
 
   // DB query to get user
-  const user = { name: "kartik mishra", password: "kartik3096" };
+  const user = await User.findOne({ where: { email: email } });
 
   // If user does not exist
   if (!user) {
@@ -71,8 +77,7 @@ const signin = asyncHandler(async (req, res) => {
     throw new Error("User does not exist");
   }
   // Successful Signin
-  //   else if (await bcrypt.compare(password, user.password)) {
-  else if (password === user.password) {
+  else if (await bcrypt.compare(password, user.password)) {
     const msg = await fetch("https://api.catboys.com/catboy")
       .then((response) => response.json())
       .then((data) => data.response);
