@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { response } = require("express");
 const User = require("../models/userModel");
 
 // @desc: Send back a simple welcome message
