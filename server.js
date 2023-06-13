@@ -5,6 +5,7 @@ const colors = require("colors");
 const { errorHandler } = require("./middleware/errorHandler");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
 const sequelize = require("./config/db");
+const { submitTest } = require("./controllers/submitController");
 
 sequelize
   .sync()
@@ -21,6 +22,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use("/api", require("./routes/userRoute"));
+
+app.post("/submit-test", submitTest);
 
 // Error Handler, Middleware
 app.use(errorHandler);
