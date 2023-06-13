@@ -13,6 +13,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api", require("./routes/userRoute"));
 
 // Error Handler
+const { errorHandler } = require("./middleware/errorMiddleware");
+app.use(errorHandler);
 
 // Server Listening
 app.listen(PORT, () => {
