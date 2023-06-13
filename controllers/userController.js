@@ -101,7 +101,14 @@ const signin = asyncHandler(async (req, res) => {
 const updatePhone = asyncHandler(async (req, res) => {
   const { phone_number } = req.body;
 
-  res.status(201).json({ tmp_success: true, message: "woohoo" });
+  const user = await User.findOne({ where: { email: req.email } });
+  user.phone_number = phone_number;
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Phone number changed / added successfully",
+  });
 });
 
 const generateToken = (email) => {
