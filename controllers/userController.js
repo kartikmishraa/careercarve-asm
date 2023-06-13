@@ -16,7 +16,7 @@ const welcomeMsg = (req, res) => {
 // @access: PUBLIC
 // @route: POST /api/signup
 const signup = asyncHandler(async (req, res) => {
-  const { name, email, password, phone } = req.body;
+  const { name, email, password, phone_number } = req.body;
 
   // Hanlde Insufficient Data
   if (!name || !email || !password) {
@@ -92,9 +92,9 @@ const signin = asyncHandler(async (req, res) => {
 // @access: PRIVATE
 // @route: PUT /api/edit/phonenumber
 const updatePhone = asyncHandler(async (req, res) => {
-  const { phone } = req.body;
+  const { phone_number } = req.body;
 
   res.status(201).json({ tmp_success: true, message: "woohoo" });
 });
 
-module.exports = { welcomeMsg, signup, signin };
+module.exports = { welcomeMsg, signup, signin, updatePhone };
