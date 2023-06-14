@@ -1,4 +1,6 @@
 const asyncHandler = require("express-async-handler");
+const Attempt = require("../models/attemptModel");
+const { Question } = require("../models/idk");
 
 // @desc: Function to handle the submit-test feature
 // @route: POST /submit-test
@@ -6,11 +8,24 @@ const asyncHandler = require("express-async-handler");
 const submitTest = asyncHandler(async (req, res) => {
   const { user_id, test_id, questions_id, answers_id } = req.body;
 
+  // Check user reattempt
+  const prev_attempt = await Attempt.findOne({
+    where: {
+      user_id: user_id,
+      test_id: test_id,
+    },
+  });
+
+  if (prev_attempt) {
+    res.status(400);
+    throw new Error("Cannot attempt again!");
+  }
+
   // Calculate score, use a function say, computeScore(question_id, answer_id);
   const score = await computeScore(questions_id, answers_id);
 
   // user_id, test_id, question_id, answer_id, score --> save
-  const attemp = await Attempt.create({
+  const attempt = await Attempt.create({
     user_id,
     test_id,
     questions_id,
@@ -19,24 +34,22 @@ const submitTest = asyncHandler(async (req, res) => {
   });
 
   // send response
-  res.status(200).json({ user_id, test_id, score });
+  if (attempt) res.status(200).json({ user_id, test_id, score });
+  else throw new Error("something went wrong");
 });
 
 // @desc: Function to compute score of a test uploaded by a user.
 const computeScore = asyncHandler(async (questions_id, answers_id) => {
-  // for each question (using its question_id) get its corresponding correct answer and tally it with the corresponding
-  // answer_id in answers_id;
   let score = 0;
-  questions_id.forEach(async (question_id, idx) => {
-    // question_id use krke correct Answer_id nikaalo
+
+  for (const [idx, question_id] of questions_id.entries()) {
     const question = await Question.findOne({
       where: { question_id: question_id },
     });
-    // tally karo with answers_id[idx] se and score ko increment croww.
-    if (question.answer_id === answers_id[idx]) score += 1;
-  });
 
-  // score ko return croww
+    if (question.correct_answer_id === answers_id[idx]) score += 1;
+  }
+
   return score;
 });
 
