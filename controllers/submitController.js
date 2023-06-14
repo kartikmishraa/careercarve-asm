@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Attempt = require("../models/attemptModel");
-const { Question } = require("../models/idk");
+const { Question } = require("../models/otherModels");
 
 // @desc: Function to handle the submit-test feature
 // @route: POST /submit-test
