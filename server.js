@@ -8,7 +8,7 @@ const sequelize = require("./config/db");
 const { submitTest } = require("./controllers/submitController");
 
 sequelize
-  .sync()
+  .sync({ force: true })
   .then(() => {
     console.log(`connected to`, `SQLITE`.bgYellow);
   })
